@@ -1,42 +1,127 @@
-#root {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
+main{
+  width:60%;
+  min-height: 1000px;
+  background-color: red;
+  display: flex;
+  flex-direction: column;
+  text-align: center;
+  padding:2rem;
+  gap:20px;
+  font-family:monospace
+}
+
+main label{
+  font-size:40px;
+}
+
+main input{
+  width:60%;
+  align-self: center;
+  border-radius:50px;
+  border: 2px red solid;
+  padding:10px;
+  font-size:16px;
+  font-family:monospace;
   text-align: center;
 }
 
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
-}
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-.logo.react:hover {
-  filter: drop-shadow(0 0 2em #61dafbaa);
-}
-
-@keyframes logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+main button{
+  border-radius:10px;
+  width:150px;
+  padding:15px;
+  background-color:#a42121;
+  color:white;
+  font-weight:bold;
+  font-size:25px;
+  font-family:monospace;
+  align-self: center;
+  cursor:pointer;
+  
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  a:nth-of-type(2) .logo {
-    animation: logo-spin infinite 20s linear;
-  }
+.pokeContainer{
+  background-color: blue;
+  padding:0.5rem;
+  width:60%;
+  align-self: center;
+  border-radius: 10px;
+  border:#a42121 3px solid;
+  background-color: whitesmoke;
+  
 }
 
-.card {
-  padding: 2em;
+.pokeContainer button {
+  font-size: 16px;
+  width:70%;
+  padding:0.3rem;
+  background-color: white;
+  color:#a42121;
+
+}
+.pokeContainer button:hovern{
+  cursor:pointer;
+  background-color: #a42121;
+  color:white;
+  transition:color 0.2s ease, background-color 0.2s ease;
+
 }
 
-.read-the-docs {
-  color: #888;
+.pokeContainer button:disabled, button:disabled:hover{
+  cursor:not-allowed;
+  background-color: grey;
+  color:rgb(194, 191, 191);
+}
+
+aside{
+  width:40%;
+  background-color: rosybrown;
+  position:absolute;
+  right:0px;
+  top:8px;
+  height: 100%;
+  padding-top:10rem;
+}
+
+aside .favContainer{
+  width:100%;
+  padding-top:0.2rem;
+  padding-bottom:0.2rem;
+  background-color: whitesmoke;
+  border-bottom:solid black 2px;
+}
+
+aside .favContainer button{
+  width:50%;
+  margin-left:2rem;
+  font-size:15px;
+  height: 10px;
+  line-height:50%;
+}
+aside .favContainer button:hover{
+  background-color: red;
+  color:white;
+  transition:background-color 0.2s ease, color 0.2s ease;
+}
+
+aside .favContainer .favContainerDisplay{
+  display:flex;
+  justify-content: center;
+}
+
+.filterContainer{
+  display:inline-flex;
+  text-align: left;
+ 
+  width:50%;
+
+}
+
+.filterContainer label{
+
+  font-size:16px;
+}
+
+.filterContainer input{
+  background-attachment: pink;
+  margin-left:-70px;
 }

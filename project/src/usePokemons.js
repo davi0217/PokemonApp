@@ -63,6 +63,10 @@ export const usePokemons=function(){
         if(newPokes){
         const jsonPokes=JSON.stringify(newPokes)
         localStorage.setItem("favs", jsonPokes)}
+
+        pokemon.types.some((p)=>{
+           console.log(p.includes("water"))
+        })
        
         
     }

@@ -20,14 +20,6 @@ Aplicación construida con React que permite buscar Pokémon, ver sus detalles y
 
 ---
 
-## 🔧 Tecnologías
-
-- React (hooks)
-- CSS o Tailwind (a tu elección)
-- [PokéAPI](https://pokeapi.co/) como fuente de datos
-
----
-
 ## 🌐 API utilizada
 
 - Obtener Pokémon por nombre o ID:  
@@ -36,42 +28,13 @@ Aplicación construida con React que permite buscar Pokémon, ver sus detalles y
   - `https://pokeapi.co/api/v2/pokemon/pikachu`
   - `https://pokeapi.co/api/v2/pokemon/25`
 
----
 
-## 🎯 Requisitos técnicos simulando una prueba real
-
-- Componentización clara.
-- Uso de React Hooks (`useState`, `useEffect`, `useRef`, `useMemo`, `useCallback`, `useContext`).
-- Código limpio y bien organizado.
-- No es necesario diseño elaborado (estilos mínimos).
-- Favorecer la mantenibilidad y separación de responsabilidades.
-
----
-
-## 🧩 Sugerencias de componentes (opcional)
-
-- `SearchBar`
-- `PokemonDetails`
-- `FavoritesList`
-- `ThemeToggle`
-- `AppContextProvider` (contexto global para favoritos, tema y contador)
-
----
-
-## ⚙️ Bonus (opcional)
+## ⚙️ Bonus 
 
 - Filtro de favoritos por tipo (agua, fuego, planta, etc.).
 - Comparar dos Pokémon seleccionados (modo batalla).
 - Scroll infinito o paginación de Pokémon.
 - Buscador con sugerencias mientras se escribe.
 
----
 
-## 🕐 Tiempo estimado
-
-Entre 5 y 8 horas para una versión funcional.
-
----
-
-## 📁 Estructura base sugerida
 

@@ -10,6 +10,10 @@ export const usePokemons=function(){
      const [favourites, setFavourites]=useState(localFavs?localFavs:[])
      const [isInFav, setIsInFav]=useState(false)
 
+     const [error, setError]=useState(false)
+
+     const [loading, setLoading]=useState(false)
+
      const searchs=useRef(0)
 
    
@@ -32,17 +36,29 @@ export const usePokemons=function(){
      
     
       const searchPokemon=async function(value){
+
+          setLoading(true)
           let searchPokemon= await fetch(`https://pokeapi.co/api/v2/pokemon/${value}`).then(
-              (result)=> {
-                  return  result.json()}
-                ).then((data)=>{  
+              (result)=>{
+                  setError(false)
+                  return result.json()
+                }    
+        
+        ).then((data)=>{ 
+                    setLoading(false) 
                     return data}
-                )   
-                
+                ).catch((err)=>{
+                    setError(true)
+                    setLoading(false)
+                })
+
+            
+              
+            const randomNum=Math.floor(Math.random()*20)
                 searchPokemon={
                     "name": searchPokemon.name[0].toUpperCase()+searchPokemon.name.substring(1, searchPokemon.name.length),
                     "id":searchPokemon.id,
-                    "img":searchPokemon?.sprites?.front_default,
+                    "img": randomNum===2?searchPokemon?.sprites?.front_shiny:searchPokemon?.sprites.front_default,
                     "ability":searchPokemon.abilities[0].ability.name,
                     "types": searchPokemon.types.map((type)=>{
                         const types=type.type.name+(searchPokemon.types.length>1 && searchPokemon.types.indexOf(type)!=searchPokemon.types.length-1?" | ":" ")
@@ -50,9 +66,12 @@ export const usePokemons=function(){
                         return  types})  
                         
                     }
+
+            
                     if(!(pokemon?.id==searchPokemon.id) || pokemon==null){
                     searchs.current++
                     setPokemon(searchPokemon)}
+                
             }
             
             
@@ -83,5 +102,5 @@ export const usePokemons=function(){
 
     }
    
-      return {"pokemon":pokemon, "isFav":isInFav, "favourites": favourites, "searchPokemon":searchPokemon, "addToFavourites":addToFavourites, "removeFav":removeFromFavourites, "searchs":searchs.current}
+      return {"pokemon":pokemon, "isFav":isInFav, "favourites": favourites, "searchPokemon":searchPokemon, "addToFavourites":addToFavourites, "removeFav":removeFromFavourites, "searchs":searchs.current, "error":error, "loading":loading}
 }

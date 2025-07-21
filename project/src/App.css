@@ -1,13 +1,42 @@
 main{
   width:60%;
   min-height: 1000px;
-  background-color: red;
+  background-color: black;
+  color:rgb(249, 249, 249);
   display: flex;
   flex-direction: column;
   text-align: center;
   padding:2rem;
   gap:20px;
   font-family:monospace
+}
+
+.clearMode{
+  background-color: rgb(240, 226, 226);
+color:black;
+}
+
+.clearModeForm{
+  background-color: blueviolet;
+}
+
+.clearModeForm label{
+  position:absolute;
+  top:8px;
+  left:8px;
+  font-size:18px;
+  background-color: rgba(94, 5, 5, 0.58);
+  width:300px;
+  text-align: left;
+  padding:10px;
+  border:2px solid red;
+  border-radius:0px 0px 10px 0px;
+}
+
+.clearModeForm input{
+  position:absolute;
+  top:18px;
+  left:-300px;
 }
 
 main label{
@@ -46,19 +75,27 @@ main button{
   align-self: center;
   border-radius: 10px;
   border:#a42121 3px solid;
-  background-color: whitesmoke;
+  background-color: rgb(71, 67, 67);
   
+}
+
+.clearMode .pokeContainer{
+  background-color: rgb(214, 212, 212);
 }
 
 .pokeContainer button {
   font-size: 16px;
   width:70%;
   padding:0.3rem;
-  background-color: white;
+  background-color: black;
   color:#a42121;
 
 }
-.pokeContainer button:hovern{
+
+.clearMode .pokeContainer button{
+  background-color: white;
+}
+.pokeContainer button:hover{
   cursor:pointer;
   background-color: #a42121;
   color:white;
@@ -74,20 +111,29 @@ main button{
 
 aside{
   width:40%;
-  background-color: rosybrown;
+  background-color: rgb(83, 83, 83);
   position:absolute;
   right:0px;
   top:8px;
   height: 100%;
-  padding-top:10rem;
+  padding-top:3rem;
+}
+
+.clearMode aside{
+    background-color: rgb(225, 224, 224);
+
 }
 
 aside .favContainer{
   width:100%;
   padding-top:0.2rem;
   padding-bottom:0.2rem;
-  background-color: whitesmoke;
+  background-color: rgb(37, 37, 37);
   border-bottom:solid black 2px;
+}
+
+.clearMode aside .favContainer{
+  background-color: blanchedalmond;
 }
 
 aside .favContainer button{
@@ -124,4 +170,31 @@ aside .favContainer .favContainerDisplay{
 .filterContainer input{
   background-attachment: pink;
   margin-left:-70px;
+}
+
+.paginationDisplay{
+  width:100%;
+  position:absolute;
+  bottom:8%;
+  padding:10px;
+  display:flex;
+  justify-content: center;
+ 
+
+}
+
+.paginationDisplayButton{
+  font-size: 15px;
+  max-width: 25px;
+  max-height: 25px;
+  padding:0px;
+  border-radius:0px;
+  background-color:#a42121;
+  align-items: center;
+
+
+}
+
+.paginationDisplayButtonChecked{
+  background-color: red;
 }

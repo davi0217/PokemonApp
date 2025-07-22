@@ -1,7 +1,8 @@
-import { createContext, useCallback, useContext, useState, useRef, useEffect} from 'react'
+import { createContext,useMemo, useCallback, useContext, useState, useRef, useEffect} from 'react'
 import {usePokemons} from './usePokemons.js'
 import { useShowFavs } from './assets/useShowFavs.js'
 import './App.css'
+import { usePagination } from './usePagination.js'
  
 const FavouritesContext=createContext()
 const PaginationContext=createContext()
@@ -84,52 +85,48 @@ function FilterFavs(){
 
 
 
+
+
+
 function DisplayFavourites(){
 
   const favs=useContext(FavouritesContext)[1]
   const removeFav=useContext(FavouritesContext)[3]
   const showFavs=useContext(FavouritesContext)[4]
+  const[favsToShow, setFavsToShow]=useState([])
+  const {numbers, setNumbers, current, handleChangePagination, numbersFiltered}=usePagination()
   const typeFilter=useContext(FavouritesContext)[6]
 
-  const [numbers, setNumbers]=useState([])
-  const [current, setCurrent]=useState(0)
+
+useEffect(()=>{
   
+  setFavsToShow(favs.filter((fav)=>{
+      if(fav.types.some((p)=>{
+        return p.includes(typeFilter)
+      })){
+        return true
+      }
+    }))
+  }, [favs, typeFilter])
 
-  const[favsLength, setFavsLength]=useState(0)
+useEffect(()=>{
   
-  useEffect(()=>{
-      
-    if(numbers.length<=current){
-      setFavsLength(current-1)
-      setCurrent(current-1)
-    }else{   
-    setFavsLength(0)
-    setCurrent(0)}
-  }, [typeFilter, numbers.length])
-
-
-  const favsToShow=favs.filter((fav)=>{
-    if(fav.types.some((p)=>{
-      return p.includes(typeFilter)
-    })){
-      return true
-    }
-  })
-
-  const handleChangePagination=function(ind){
-    setFavsLength(ind)
-  }
-
-
-
-  console.log(favs)
-  console.log(favsToShow)
+  let newNums=[]
   
+  for(let i=0;i<favsToShow.length; i++){
+    if(i%4===0){
+      newNums.push(i/4)
+    }}
+    
+    setNumbers(newNums)
+    
+  },[favsToShow])
+
 
   return <>
   {showFavs && ( <aside>
   <p>There are {favsToShow.length} favs to show, {favs.length} in total</p>
-      {favsToShow && favsToShow.slice(favsLength*4, favsLength*4+4).map((fav)=>{      
+      {favsToShow && favsToShow.slice(current*4, current*4+4).map((fav)=>{      
             return (
            <div className='favContainer'>
           <h1>{fav.name}</h1>
@@ -138,65 +135,35 @@ function DisplayFavourites(){
           <button onClick={()=>{
             removeFav(fav.id)
           }}>Remove from favs</button>
+          <button onClick={()=>{
+            return null
+          }}>Add to team</button>
           </div>
           </div>)})
 
       }
 
-    
-    <PaginationContext value={[numbers, setNumbers, current, setCurrent]}>
-
-    <PaginationDisplay length={favsToShow.length} handleChangePagination={handleChangePagination}/>
-    </PaginationContext>
+    <PaginationDisplay length={favsToShow.length} handleChangePagination={handleChangePagination} numbersFiltered={numbersFiltered} numbers={numbers} setNumbers={setNumbers} currentNumber={current}/>
 
   </aside> ) }
 </>
 
 }
 
-function PaginationDisplay({length, handleChangePagination}){
 
-  /* const [numbers, setNumbers]=useState([]) */
 
-  const numbers=useContext(PaginationContext)[0]
-  const setNumbers=useContext(PaginationContext)[1]
-  const currentNumber=useContext(PaginationContext)[2]
-  const setCurrentNumber=useContext(PaginationContext)[3]
+
+
+function PaginationDisplay({handleChangePagination, numbersFiltered, numbers, currentNumber}){
 
  
-  useEffect(()=>{
-
-    let newNums=[]
-
-     for(let i=0;i<length; i++){
-    if(i%4===0){
-      newNums.push(i/4)
-    }}
-
-    setNumbers(newNums)
-    console.log(length)
-    console.log("newnums is "+ newNums)
-  
-
-
-  },[length])
-
-  const numbersFiltered=numbers.filter((n)=>{
-    
-    if(numbers.indexOf(n)<currentNumber+3 && numbers.indexOf(n)>=currentNumber ||numbers.indexOf(n)==numbers.length-1 || (n>numbers.length-6 && currentNumber>numbers.length-5)){
-      return true
-    }
-
-  })
-
-
 
   return <div className="paginationDisplay">
     {(numbers.length>1)&& <><button className='paginationDisplayButton' onClick={()=>{
 
       if(currentNumber>0){
       handleChangePagination(0)
-      setCurrentNumber(0)}
+      }
     }}>
     &lt;_
       </button>
@@ -204,39 +171,39 @@ function PaginationDisplay({length, handleChangePagination}){
 
       if(currentNumber>0){
       handleChangePagination(currentNumber-1)
-      setCurrentNumber(currentNumber-1)}
+     }
     }}>
     &lt;
       </button>
       </>
       }
-      {(numbers.length>=7) && numbersFiltered.map((n)=>{
-          if(numbersFiltered.indexOf(n)==numbersFiltered.length-1){
+      {(numbers.length>=7) && numbersFiltered?.map((n)=>{
+          if(n==numbers.length-1){
 
             return <>
             {currentNumber<numbers.length-5 && <button className="paginationDisplayButton">...</button>}
-            {currentNumber==numbers.length-5 && <button className={currentNumber==n?"paginationDisplayButton paginationDisplayButtonChecked":"paginationDisplayButton"} value={n} onClick={(e)=>{
+            {currentNumber==numbers.length-5 && <button className={currentNumber==n-1?"paginationDisplayButton paginationDisplayButtonChecked":"paginationDisplayButton"} value={n-1} onClick={(e)=>{
               handleChangePagination(e.target.value)
-              setCurrentNumber(n)
+            
          }}>{n-1}</button>}
             
             <button className={currentNumber==n?"paginationDisplayButton paginationDisplayButtonChecked":"paginationDisplayButton"} value={n} onClick={(e)=>{
               handleChangePagination(e.target.value)
-              setCurrentNumber(n)
+             
          }}>{n}</button>
          </>
 
           }
 
-         return <button className={currentNumber==n?"paginationDisplayButton paginationDisplayButtonChecked":"paginationDisplayButton"} value={n} onClick={(e)=>{
-              handleChangePagination(e.target.value)
-              setCurrentNumber(n)
+         return <button className={currentNumber==n?"paginationDisplayButton paginationDisplayButtonChecked":"paginationDisplayButton"} value={n} onClick={()=>{
+              handleChangePagination(n)
+             
          }}>{n}</button>
       })}
       {(numbers.length<7) && numbers.map((n)=>{
          return <button className={currentNumber==n?"paginationDisplayButton paginationDisplayButtonChecked":"paginationDisplayButton"} value={n} onClick={(e)=>{
               handleChangePagination(e.target.value)
-              setCurrentNumber(n)
+             
          }}>{n}</button>
       })}
 
@@ -244,7 +211,7 @@ function PaginationDisplay({length, handleChangePagination}){
 
       if(currentNumber<numbers.length-1){
       handleChangePagination(currentNumber+1)
-      setCurrentNumber(currentNumber+1)}
+      }
     }}>
     &gt;
       </button>
@@ -252,7 +219,7 @@ function PaginationDisplay({length, handleChangePagination}){
 
       if(currentNumber<numbers.length-1){
       handleChangePagination(numbers.length-1)
-      setCurrentNumber(numbers.length-1)}
+   }
     }}>
     _&gt;
       </button>

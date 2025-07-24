@@ -5,20 +5,26 @@ import {useState, useEffect, useRef} from 'react'
 export const usePokemons=function(){
      const [pokemon, setPokemon]=useState(null)
 
-     const localFavs=JSON.parse(localStorage.getItem("favs"))
+    const localFavs=JSON.parse(localStorage.getItem("favs"))  
     
      const [favourites, setFavourites]=useState(localFavs?localFavs:[])
      const [isInFav, setIsInFav]=useState(false)
 
+     const [team, setTeam]=useState([])
+
      const [error, setError]=useState(false)
 
      const [loading, setLoading]=useState(false)
+
+     
 
      const searchs=useRef(0)
 
    
 
      useEffect(()=>{
+        
+      
 
         setIsInFav(false)
 
@@ -30,6 +36,24 @@ export const usePokemons=function(){
                 })}  
 
      },[pokemon, favourites])
+
+     useEffect(()=>{
+
+         let newTeam=[]
+       
+
+
+         favourites?.forEach((poke)=>{
+                    if( poke?.isInTeam===true){
+                        newTeam.push(poke)
+                    }
+                }) 
+            
+            
+            setTeam(newTeam)
+            console.log("my team is "+ team)
+            console.log("my new team is "+ newTeam)
+     }, [favourites])
 
     
       
@@ -60,6 +84,7 @@ export const usePokemons=function(){
                     "id":searchPokemon.id,
                     "img": randomNum===2?searchPokemon?.sprites?.front_shiny:searchPokemon?.sprites.front_default,
                     "ability":searchPokemon.abilities[0].ability.name,
+                    "isInTeam":false,
                     "types": searchPokemon.types.map((type)=>{
                         const types=type.type.name+(searchPokemon.types.length>1 && searchPokemon.types.indexOf(type)!=searchPokemon.types.length-1?" | ":" ")
                         
@@ -79,16 +104,46 @@ export const usePokemons=function(){
     const addToFavourites=function(){ 
         const newPokes=[...favourites, pokemon];
         setFavourites(newPokes)
-        if(newPokes){
+         if(newPokes){
         const jsonPokes=JSON.stringify(newPokes)
-        localStorage.setItem("favs", jsonPokes)}
-
-        pokemon.types.some((p)=>{
-           console.log(p.includes("water"))
-        })
-       
-        
+        localStorage.setItem("favs", jsonPokes)} 
+  
     }
+
+    const markFavourite=function(id){ 
+
+        let counter=0
+        let add=true
+
+        favourites.forEach((p)=>{
+            if(p.isInTeam){
+                counter++
+            }
+        })
+
+        if(counter==6) {
+            add=false
+        }
+       
+        let newFavs=favourites.map((p)=>{
+            
+            if(p.id==id){
+
+                p.isInTeam=p.isInTeam==false&&add?true:false
+                return  p
+            }else{
+                return p
+            }
+        })
+        ;
+        console.log(newFavs)
+        
+        setFavourites(newFavs)
+       if(newFavs){
+        const jsonPokes=JSON.stringify(newFavs)
+        localStorage.setItem("favs", jsonPokes)}  
+    }
+   
     
     
     const removeFromFavourites=function(id){
@@ -102,5 +157,5 @@ export const usePokemons=function(){
 
     }
    
-      return {"pokemon":pokemon, "isFav":isInFav, "favourites": favourites, "searchPokemon":searchPokemon, "addToFavourites":addToFavourites, "removeFav":removeFromFavourites, "searchs":searchs.current, "error":error, "loading":loading}
+      return {"pokemon":pokemon, "isFav":isInFav, "favourites": favourites, "searchPokemon":searchPokemon, "addToFavourites":addToFavourites, "removeFav":removeFromFavourites, "markFavourite":markFavourite, "team":team, "searchs":searchs.current, "error":error, "loading":loading}
 }

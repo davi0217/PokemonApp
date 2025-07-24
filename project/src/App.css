@@ -11,6 +11,10 @@ main{
   font-family:monospace
 }
 
+.hidden{
+  display:none
+}
+
 .clearMode{
   background-color: rgb(240, 226, 226);
 color:black;
@@ -35,8 +39,29 @@ color:black;
 
 .clearModeForm input{
   position:absolute;
-  top:18px;
-  left:-300px;
+  top:20px;
+  left:-120px;
+}
+
+
+.showTeamForm label{
+  position:absolute;
+  top:8px;
+  right:440px;
+  font-size:18px;
+  background-color: rgba(94, 5, 5, 0.58);
+  width:300px;
+  text-align: left;
+  padding:10px;
+  border:2px solid red;
+  border-radius:0px 0px 10px 0px;
+}
+
+.showTeamForm input{
+  position:absolute;
+  background-color: red;
+  top:20px;
+  left:300px;
 }
 
 main label{
@@ -115,8 +140,9 @@ aside{
   position:absolute;
   right:0px;
   top:8px;
-  height: 100%;
+  min-height: 1000px;
   padding-top:3rem;
+  padding-bottom:16px;
 }
 
 .clearMode aside{
@@ -154,6 +180,10 @@ aside .favContainer .favContainerDisplay{
   justify-content: center;
 }
 
+aside .favOnTeam, .clearMode aside .favOnTeam{
+  background-color: red;
+}
+
 .filterContainer{
   display:inline-flex;
   text-align: left;
@@ -175,7 +205,7 @@ aside .favContainer .favContainerDisplay{
 .paginationDisplay{
   width:100%;
   position:absolute;
-  bottom:8%;
+  bottom:25%;
   padding:10px;
   display:flex;
   justify-content: center;
@@ -197,4 +227,61 @@ aside .favContainer .favContainerDisplay{
 
 .paginationDisplayButtonChecked{
   background-color: red;
+}
+
+.teamDiv{
+  border-radius:10px;
+  border:4px dotted red;
+  width:50%;
+  height:85%;
+  align-self: center;
+  position: absolute;
+  background-color: rgba(95, 88, 88, 0.918);
+  text-align: center;
+  filter:blur(0);
+
+}
+
+#team{
+  filter:blur(0);
+}
+
+.teamContainer{
+  background-color: rgba(131, 29, 29, 0);
+  width:80%;
+  display:flex;
+  justify-content: center;
+ flex-wrap: wrap;
+ margin:0 auto;
+ filter:blur(0)
+}
+
+.teamDiv img{
+  max-width: 30%;
+}
+
+.fighterContainer{
+  width:48%;
+  background-color: rgba(141, 41, 41, 0.427);
+  border:2px black solid;
+
+}
+
+.buttonCloseTeam{
+
+  color: red;
+  width:10px;
+  height:10px;
+  font-size:15px;
+ position:absolute;
+ top:5%;
+ right:5%;
+
+ line-height: 25%;
+ text-align: center;
+ justify-content: center;
+}
+
+.blurry{
+  filter:blur(4px)
 }

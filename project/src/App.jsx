@@ -9,33 +9,70 @@ const PaginationContext=createContext()
 
 function App() {
   
-  const {pokemon, isFav, favourites, searchPokemon, addToFavourites, removeFav, searchs, error, loading}=usePokemons()
+  const {pokemon, isFav, favourites, searchPokemon, addToFavourites, removeFav, markFavourite, team, searchs, error, loading}=usePokemons()
 
   const {showFavs, changeDisplayFavs, typeFilter, changeTypeFilter}=useShowFavs()
 
   const [clearMode, setClearMode]=useState(false)
+  const [showingTeam, setShowingTeam]=useState(false)
 
   const handleClearMode=function(){
         setClearMode(!clearMode)
   }
+  const handleShowingTeam=function(){
+        setShowingTeam(!showingTeam)
+  }
 
-  return <main className={clearMode?"clearMode":""}>
-  <FavouritesContext value={[isFav,favourites, addToFavourites, removeFav, showFavs, changeDisplayFavs, typeFilter, changeTypeFilter]}>
+  return <main className={(clearMode?"clearMode":" ")}>
+  <FavouritesContext value={[isFav,favourites, addToFavourites, removeFav, showFavs, changeDisplayFavs, typeFilter, changeTypeFilter, markFavourite, team, showingTeam]}>
  
- <form className="clearModeForm" action="">
+ <form className={showingTeam?'clearModeForm'+" blurry":"clearModeForm"} action="">
  <label htmlFor="setClearMode">Change to {clearMode?"dark mode":"clear mode"}</label>
  <input type="checkbox" name="setClearMode" checked={clearMode} onChange={()=>{
 handleClearMode()
  }} />
  </form>
+ <form className={showingTeam?'showTeamForm'+" blurry":"showTeamForm"} action="">
+ <label htmlFor="setTeamForm">Show team</label>
+ <input type="checkbox" name="setTeamForm" checked={showingTeam} onChange={()=>{
+handleShowingTeam()
+ }} />
+ </form>
  
   <SearchBar handleClick={searchPokemon} searchs={searchs}/>
-  <Display pok={pokemon} error={error} loading={loading}/>
+  <Display pok={pokemon}  error={error} loading={loading} />
   <DisplayFavourites favs={favourites}/>
   <Footer/>
+  <Team showing={showingTeam} handleShowing={handleShowingTeam}/>
   
   </FavouritesContext>
  </main>
+}
+
+function Team({showing, handleShowing}){
+
+  const team=useContext(FavouritesContext)[9]
+
+  return <div className={showing?'teamDiv':"hidden"} id="team" >
+
+    <h1>Here is your team</h1>
+    <button className='buttonCloseTeam' onClick={()=>{
+      handleShowing()
+    }}>X</button>
+    <div className='teamContainer'>
+      {team.map((poke)=>{
+
+          return <div className='fighterContainer'>
+              <p>{poke.name}</p>
+              <img src={poke.img} alt="" />
+
+          </div>
+
+      })}
+      </div>
+
+  </div>
+
 }
 
 function FilterFavs(){
@@ -44,8 +81,9 @@ function FilterFavs(){
   const setShowFavs=useContext(FavouritesContext)[5]
   const typeFilter=useContext(FavouritesContext)[6]
   const changeTypeFilter=useContext(FavouritesContext)[7]
+  const showing=useContext(FavouritesContext)[10]
 
-  return <div className='filterContainer'>  
+  return <div className={showing?'filterContainer'+" blurry":"filterContainer"}>  
 
       <label htmlFor="favsFilter">Show your favourites</label>
       <input type="checkbox" name="favsFilter" checked={showFavs} onChange={()=>{
@@ -96,11 +134,13 @@ function DisplayFavourites(){
   const[favsToShow, setFavsToShow]=useState([])
   const {numbers, setNumbers, current, handleChangePagination, numbersFiltered}=usePagination()
   const typeFilter=useContext(FavouritesContext)[6]
+  const markFavourite=useContext(FavouritesContext)[8]
 
 
 useEffect(()=>{
   
-  setFavsToShow(favs.filter((fav)=>{
+  setFavsToShow(favs?.filter((fav)=>{
+    console.log(fav.id)
       if(fav.types.some((p)=>{
         return p.includes(typeFilter)
       })){
@@ -108,6 +148,10 @@ useEffect(()=>{
       }
     }))
   }, [favs, typeFilter])
+
+  useEffect(()=>{
+    handleChangePagination(0)
+  },[typeFilter])
 
 useEffect(()=>{
   
@@ -128,7 +172,7 @@ useEffect(()=>{
   <p>There are {favsToShow.length} favs to show, {favs.length} in total</p>
       {favsToShow && favsToShow.slice(current*4, current*4+4).map((fav)=>{      
             return (
-           <div className='favContainer'>
+           <div className={fav.isInTeam?"favContainer favOnTeam":"favContainer"}>
           <h1>{fav.name}</h1>
           <div className='favContainerDisplay'>
           <img src={fav.img} alt="" />
@@ -136,8 +180,8 @@ useEffect(()=>{
             removeFav(fav.id)
           }}>Remove from favs</button>
           <button onClick={()=>{
-            return null
-          }}>Add to team</button>
+            markFavourite(fav.id)
+          }}>{fav.isInTeam?"Remove from team":"Add to team"}</button>
           </div>
           </div>)})
 
@@ -231,8 +275,11 @@ function PaginationDisplay({handleChangePagination, numbersFiltered, numbers, cu
 function Footer(){
 
   const favs=useContext(FavouritesContext)[1]
+  const team=useContext(FavouritesContext)[9]
+  const showing=useContext(FavouritesContext)[10]
 
-  return <footer>FAVS: 
+  return <footer className={showing?" blurry":" "}>
+    <div>FAVS: 
     [
     {favs && favs.map((fav)=>{
       return <span>
@@ -240,6 +287,17 @@ function Footer(){
       </span>
     })}
     ]
+    </div>
+    <div>TEAM {team.length}: 
+    [
+    {favs && favs.map((fav)=>{
+      if(fav.isInTeam){
+      return <span>
+        {fav.name+" "}
+      </span>}
+    })}
+    ]
+    </div>
   </footer>
 }
 
@@ -247,13 +305,14 @@ function Display({pok, error, loading}){
 
   const clickFav=useContext(FavouritesContext)[2]
   const isFav=useContext(FavouritesContext)[0]
+  const showing=useContext(FavouritesContext)[10]
   
 if(loading){
-  return <h1 style={{color:"red"}}>LOADING</h1>
+  return <h1  className={showing?" blurry":" "}style={{color:"red"}}>LOADING</h1>
 }else if(error){
     return <h1>Your pokemons does not exist...</h1>
   }else if(pok){
-  return <div className="pokeContainer">
+  return <div className={showing?'pokeContainer'+" blurry":"pokeContainer"}>
         {pok && <div>
           <h1>{pok.name}</h1>
           <img src={pok.img} alt="" />
@@ -270,12 +329,13 @@ if(loading){
 
 function SearchBar({handleClick, searchs}){
   const [value, setValue]=useState()
+  const showing=useContext(FavouritesContext)[10]
 
   const handleChange=function(e){
     setValue(e)
   }
 
-  return <>
+  return <div className={showing?" blurry":" "}>
   <label htmlFor="search">Look for a pokemon</label> <br />
     <FilterFavs/>
   <input type="text" placeholder='Pikachu, charmander...' onChange={(e)=>{
@@ -285,7 +345,7 @@ handleChange(e.target.value)
     handleClick(value)
   }}>Search</button>
   <h5>You've made a total of {searchs} searchs</h5>
-  </>
+  </div>
 }
 
 export default App
